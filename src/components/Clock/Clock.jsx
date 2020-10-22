@@ -44,10 +44,14 @@ const clockReducer = (state, action) => {
         hour: action.hour
       };
     case actionTypes.SET_RANDOM_TIME:
+      function randomIntFromInterval(min, max) {
+        // min and max included
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
       return {
-        hour: Math.floor(Math.random() * 60),
-        minute: Math.floor(Math.random() * 60),
-        second: Math.floor(Math.random() * 60)
+        hour: randomIntFromInterval(0, 11),
+        minute: randomIntFromInterval(0, 59),
+        second: randomIntFromInterval(0, 59)
       };
     case actionTypes.INCREMENT_HOUR:
       return {
@@ -76,7 +80,9 @@ export const Clock = () => {
     second: 0,
     hour: 0
   });
-
+  useEffect(() => {
+    dispatch({ type: actionTypes.SET_RANDOM_TIME });
+  }, []);
   return (
     <article className="clock">
       <div className="hours-container">
