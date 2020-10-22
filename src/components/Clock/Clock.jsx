@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import "./clock.css";
 
@@ -97,7 +97,6 @@ const useClock = ({
   second
 } = {}) => {
   const { current: internalIntialState } = React.useRef(initialState);
-  console.log(initialState);
   const [state, dispatch] = useReducer(reducer, internalIntialState);
   const clockIsControlled = Boolean(onChange);
 
@@ -124,33 +123,48 @@ const useClock = ({
   return { getResetterProps, state, dispatch };
 };
 
+const HourHand = ({ hour }) => {
+  return (
+    <div className="hours-container">
+      <div
+        className="hours"
+        style={{
+          transform: `rotate(${hour * 30}deg)`
+        }}
+      ></div>
+    </div>
+  );
+};
+const MinuteHand = ({ minute }) => {
+  return (
+    <div className="minutes-container">
+      <div
+        className="minutes"
+        style={{
+          transform: `rotate(${minute * 60}deg)`
+        }}
+      ></div>
+    </div>
+  );
+};
+const SecondHand = ({ second }) => {
+  return (
+    <div className="seconds-container">
+      <div
+        className="seconds"
+        style={{
+          transform: `rotate(${second * 60}deg)`
+        }}
+      ></div>
+    </div>
+  );
+};
 const Clock = ({ state, dispatch, ...props }) => {
   return (
     <article className="clock">
-      <div className="hours-container">
-        <div
-          className="hours"
-          style={{
-            transform: `rotate(${state.hour * 30}deg)`
-          }}
-        ></div>
-      </div>
-      <div className="minutes-container">
-        <div
-          className="minutes"
-          style={{
-            transform: `rotate(${state.minute * 30}deg)`
-          }}
-        ></div>
-      </div>
-      <div className="seconds-container">
-        <div
-          className="seconds"
-          style={{
-            transform: `rotate(${state.second * 30}deg)`
-          }}
-        ></div>
-      </div>
+      <HourHand />
+      <MinuteHand />
+      <SecondHand />
     </article>
   );
 };
