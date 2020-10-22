@@ -177,17 +177,15 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
     </div>
   );
 };
-const ClockWithErrorBoundary = (props) => {
+const ClockWithErrorBoundary = ({ children, props }) => {
   const { state, dispatch } = useClock();
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Clock state={state} dispatch={dispatch} {...props}>
-        <HourHand />
-        <MinuteHand />
-        <SecondHand />
+        {children}
       </Clock>
     </ErrorBoundary>
   );
 };
 
-export default ClockWithErrorBoundary;
+export { ClockWithErrorBoundary as Clock, HourHand, MinuteHand, SecondHand };
