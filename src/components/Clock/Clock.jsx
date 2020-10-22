@@ -1,8 +1,8 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useReducer } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import "./clock.css";
 
-const callAll = (...fns) => (...args) => fns.forEach((fn) => fn?.(...args));
+const callAll = (...fns) => (...args) => fns.forEach(fn => fn?.(...args));
 // https://cssanimation.rocks/clocks/
 const actionTypes = {
   RESET: "RESET",
@@ -92,15 +92,23 @@ const useClock = ({
     minute: 0,
     second: 0
   },
-  hour,
-  minute,
-  second
+  hour: controlledHour,
+  minute: controlledMinute,
+  second: controlledSecond
 } = {}) => {
   const { current: internalIntialState } = React.useRef(initialState);
   const [state, dispatch] = useReducer(reducer, internalIntialState);
   const clockIsControlled = Boolean(onChange);
 
-  const dispatchWithOnChange = (action) => {
+  const hourIsControlled = Boolean(controlledHour);
+  const hour = hourIsControlled ? controlledHour : state.hour;
+
+  const minuteIsControlled = Boolean(controlledMinute);
+  const minute = minuteIsControlled ? controlledMinute : state.minute;
+
+  const secondIsControlled = Boolean(controlledSecond);
+  const second = secondIsControlled ? controlledSecond : state.second;
+  const dispatchWithOnChange = action => {
     if (!clockIsControlled) {
       dispatch(action);
     }
@@ -120,7 +128,12 @@ const useClock = ({
       ...props
     };
   };
-  return { getResetterProps, state, dispatch };
+
+  return {
+    getResetterProps,
+    state: { hour, minute, second },
+    dispatch
+  };
 };
 
 const HourHand = ({ hour }) => {
@@ -162,7 +175,7 @@ const SecondHand = ({ second }) => {
 const Clock = ({ state, dispatch, children, ...props }) => {
   return (
     <div className="clock">
-      {React.Children.map(children, (child) => {
+      {React.Children.map(children, child => {
         return React.cloneElement(child, state);
       })}
     </div>
@@ -177,8 +190,11 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
     </div>
   );
 };
-const ClockWithErrorBoundary = ({ children, props }) => {
-  const { state, dispatch } = useClock();
+const ClockWithErrorBoundary = ({ children, hour, minute, props }) => {
+  const { state, dispatch } = useClock({
+    hour,
+    minute
+  });
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Clock state={state} dispatch={dispatch} {...props}>
