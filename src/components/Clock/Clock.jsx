@@ -159,13 +159,13 @@ const SecondHand = ({ second }) => {
     </div>
   );
 };
-const Clock = ({ state, dispatch, ...props }) => {
+const Clock = ({ state, dispatch, children, ...props }) => {
   return (
-    <article className="clock">
-      <HourHand />
-      <MinuteHand />
-      <SecondHand />
-    </article>
+    <div className="clock">
+      {React.Children.map(children, (child) => {
+        return React.cloneElement(child, state);
+      })}
+    </div>
   );
 };
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
@@ -181,7 +181,11 @@ const ClockWithErrorBoundary = (props) => {
   const { state, dispatch } = useClock();
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Clock state={state} dispatch={dispatch} {...props} />
+      <Clock state={state} dispatch={dispatch} {...props}>
+        <HourHand />
+        <MinuteHand />
+        <SecondHand />
+      </Clock>
     </ErrorBoundary>
   );
 };
