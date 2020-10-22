@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import "./clock.css";
 
 const callAll = (...fns) => (...args) => fns.forEach((fn) => fn?.(...args));
-
+// https://cssanimation.rocks/clocks/
 const actionTypes = {
   RESET: "RESET",
   SET_HOUR: "CHANGE_HOUR",
@@ -97,6 +97,7 @@ const useClock = ({
   second
 } = {}) => {
   const { current: internalIntialState } = React.useRef(initialState);
+  console.log(initialState);
   const [state, dispatch] = useReducer(reducer, internalIntialState);
   const clockIsControlled = Boolean(onChange);
 
@@ -164,7 +165,6 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
 };
 const ClockWithErrorBoundary = (props) => {
   const { state, dispatch } = useClock();
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Clock state={state} dispatch={dispatch} {...props} />
