@@ -1,6 +1,11 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useReducer } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import "./clock.css";
+
+const callAll = (...fns) => (...args) => fns.forEach((fn) => fn?.(...args));
+
 const actionTypes = {
+  RESET: "RESET",
   SET_HOUR: "CHANGE_HOUR",
   SET_MINUTE: "CHANGE_MINUTE",
   SET_SECOND: "CHANGE_SECOND",
@@ -12,7 +17,21 @@ const actionTypes = {
 };
 
 const clockReducer = (state, action) => {
+  if (action.hour && (action.hour < 0 || action.hour > 11)) {
+    throw new Error("hour must be a number from 0 to 11 inclusive");
+  }
+  if (action.minute && (action.minute < 0 || action.minute > 59)) {
+    throw new Error("minute must be a number from 0 to 59 inclusive");
+  }
+  if (action.second && (action.second < 0 || action.second > 59)) {
+    throw new Error("second must be a number from 0 to 59 inclusive");
+  }
   switch (action.type) {
+    case actionTypes.RESET:
+      return {
+        ...state,
+        ...action.initialState
+      };
     case actionTypes.SET_CLOCK:
       return {
         second: action.second,
@@ -20,25 +39,16 @@ const clockReducer = (state, action) => {
         hour: action.hour
       };
     case actionTypes.SET_MINUTE:
-      if (action.minute < 0 || action.minute > 59) {
-        throw new Error("minute must be a number from 0 to 59 inclusive");
-      }
       return {
         ...state,
         minute: action.minute
       };
     case actionTypes.SET_SECOND:
-      if (action.second < 0 || action.second > 59) {
-        throw new Error("second must be a number from 0 to 59 inclusive");
-      }
       return {
         ...state,
         second: action.second
       };
     case actionTypes.SET_HOUR:
-      if (action.hour < 0 || action.hour > 11) {
-        throw new Error("second must be a number from 0 to 11 inclusive");
-      }
       return {
         ...state,
         hour: action.hour
@@ -74,15 +84,46 @@ const clockReducer = (state, action) => {
       );
   }
 };
-export const Clock = () => {
-  const [state, dispatch] = useReducer(clockReducer, {
+const useClock = ({
+  reducer = clockReducer,
+  onChange,
+  initialState = {
+    hour: 0,
     minute: 0,
-    second: 0,
-    hour: 0
-  });
-  useEffect(() => {
-    dispatch({ type: actionTypes.SET_RANDOM_TIME });
-  }, []);
+    second: 0
+  },
+  hour,
+  minute,
+  second
+} = {}) => {
+  const { current: internalIntialState } = React.useRef(initialState);
+  const [state, dispatch] = useReducer(reducer, internalIntialState);
+  const clockIsControlled = Boolean(onChange);
+
+  const dispatchWithOnChange = (action) => {
+    if (!clockIsControlled) {
+      dispatch(action);
+    }
+    if (onChange) {
+      onChange(reducer({ ...state, hour, minute, second }, action), action);
+    }
+  };
+
+  const reset = () =>
+    dispatchWithOnChange({
+      type: actionTypes.RESET,
+      initialState: internalIntialState
+    });
+  const getResetterProps = ({ onClick, ...props } = {}) => {
+    return {
+      onClick: callAll(onClick, reset),
+      ...props
+    };
+  };
+  return { getResetterProps, state, dispatch };
+};
+
+const Clock = ({ state, dispatch, ...props }) => {
   return (
     <article className="clock">
       <div className="hours-container">
@@ -94,11 +135,41 @@ export const Clock = () => {
         ></div>
       </div>
       <div className="minutes-container">
-        <div className="minutes"></div>
+        <div
+          className="minutes"
+          style={{
+            transform: `rotate(${state.minute * 30}deg)`
+          }}
+        ></div>
       </div>
       <div className="seconds-container">
-        <div className="seconds"></div>
+        <div
+          className="seconds"
+          style={{
+            transform: `rotate(${state.second * 30}deg)`
+          }}
+        ></div>
       </div>
     </article>
   );
 };
+const ErrorFallback = ({ error, resetErrorBoundary }) => {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+};
+const ClockWithErrorBoundary = (props) => {
+  const { state, dispatch } = useClock();
+
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Clock state={state} dispatch={dispatch} {...props} />
+    </ErrorBoundary>
+  );
+};
+
+export default ClockWithErrorBoundary;
