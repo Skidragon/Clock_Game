@@ -1,0 +1,9 @@
+.digital-wrap {
+  display: flex;
+  background: rgb(39, 39, 39);
+}
+
+.digit {
+  flex: 1;
+  border: 2px solid black;
+}
