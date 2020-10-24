@@ -106,9 +106,9 @@ const useClock = ({
   reducer = clockReducer,
   onChange,
   initialState = {
-    hour: 0,
-    minute: 0,
-    second: 0
+    hour: new Date().getHours() % 12,
+    minute: new Date().getMinutes(),
+    second: new Date().getSeconds()
   },
   hour: controlledHour,
   minute: controlledMinute,
