@@ -1,8 +1,7 @@
 .clock {
   border-radius: 50%;
-  background: #fff
-    url(https://cssanimation.rocks/images/posts/clocks/ios_clock.svg) no-repeat
-    center;
+  background: url(https://cssanimation.rocks/images/posts/clocks/ios_clock.svg)
+    no-repeat center;
   background-size: 100%;
   height: 20em;
   padding-bottom: 31%;
@@ -39,15 +38,17 @@
   top: 30%;
   transform-origin: 50% 100%;
   width: 2.5%;
+  border: 3px solid lightblue;
 }
 .minutes {
   background: #000;
-  height: 40%;
+  height: 26%;
   left: 49%;
   position: absolute;
-  top: 10%;
+  top: 25%;
   transform-origin: 50% 100%;
   width: 2%;
+  border: 2px solid lightblue;
 }
 
 .seconds {
@@ -59,4 +60,15 @@
   transform-origin: 50% 80%;
   width: 1%;
   z-index: 8;
+  border: 1px solid lightblue;
+}
+
+.digital-wrap {
+  display: flex;
+  background: rgb(39, 39, 39);
+}
+
+.digit {
+  flex: 1;
+  border: 2px solid black;
 }

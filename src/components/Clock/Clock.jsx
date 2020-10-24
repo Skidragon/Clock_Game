@@ -1,19 +1,20 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import "./clock.css";
 
 const callAll = (...fns) => (...args) => fns.forEach(fn => fn?.(...args));
 // https://cssanimation.rocks/clocks/
 const actionTypes = {
+  MOVE_FORWARD: "MOVE_FORWARD",
   RESET: "RESET",
-  SET_HOUR: "CHANGE_HOUR",
-  SET_MINUTE: "CHANGE_MINUTE",
-  SET_SECOND: "CHANGE_SECOND",
+  SET_HOUR: "SET_HOUR",
+  SET_MINUTE: "SET_MINUTE",
+  SET_SECOND: "SET_SECOND",
+  SET_CLOCK: "SET_CLOCK",
+  SET_RANDOM_TIME: "SET_RANDOM_TIME",
   INCREMENT_HOUR: "INCREMENT_HOUR",
   INCREMENT_MINUTE: "INCREMENT_MINUTE",
-  INCREMENT_SECOND: "INCREMENT_SECOND",
-  SET_CLOCK: "SET_CLOCK",
-  SET_RANDOM_TIME: "SET_RANDOM_TIME"
+  INCREMENT_SECOND: "INCREMENT_SECOND"
 };
 
 const clockReducer = (state, action) => {
@@ -27,6 +28,23 @@ const clockReducer = (state, action) => {
     throw new Error("second must be a number from 0 to 59 inclusive");
   }
   switch (action.type) {
+    case actionTypes.MOVE_FORWARD:
+      const { hour, minute, second } = state;
+      let updatedSecond = second + 1 > 59 ? 0 : second + 1;
+      let updatedMinute = minute;
+
+      if (second + 1 > 59) {
+        updatedMinute += 1;
+      }
+      let updatedHour = updatedMinute === 60 ? hour + 1 : hour;
+      if (updatedMinute === 60) {
+        updatedMinute = 0;
+      }
+      return {
+        hour: updatedHour,
+        minute: updatedMinute,
+        second: updatedSecond
+      };
     case actionTypes.RESET:
       return {
         ...state,
@@ -71,12 +89,12 @@ const clockReducer = (state, action) => {
     case actionTypes.INCREMENT_MINUTE:
       return {
         ...state,
-        minute: action.minute > 59 ? 0 : action.minute + 1
+        minute: state.minute > 59 ? 0 : state.minute + 1
       };
     case actionTypes.INCREMENT_SECOND:
       return {
         ...state,
-        second: action.second > 59 ? 0 : action.second + 1
+        second: state.second > 59 ? 0 : state.second + 1
       };
     default:
       throw new Error(
@@ -154,7 +172,7 @@ const MinuteHand = ({ minute }) => {
       <div
         className="minutes"
         style={{
-          transform: `rotate(${minute * 60}deg)`
+          transform: `rotate(${minute * 6}deg)`
         }}
       ></div>
     </div>
@@ -166,18 +184,34 @@ const SecondHand = ({ second }) => {
       <div
         className="seconds"
         style={{
-          transform: `rotate(${second * 60}deg)`
+          transform: `rotate(${second * 6}deg)`
         }}
       ></div>
     </div>
   );
 };
 const Clock = ({ state, dispatch, children, ...props }) => {
+  useEffect(() => {
+    const moveFoward = setInterval(() => {
+      dispatch({ type: "MOVE_FORWARD" });
+    }, 1000);
+    return () => {
+      clearInterval(moveFoward);
+    };
+  }, [dispatch]);
+
   return (
-    <div className="clock">
-      {React.Children.map(children, child => {
-        return React.cloneElement(child, state);
-      })}
+    <div>
+      <div className="clock" {...props}>
+        {React.Children.map(children, child => {
+          return React.cloneElement(child, state);
+        })}
+      </div>
+      <div className="digital-wrap">
+        <div className="digit">{state.hour}</div>
+        <div className="digit">{state.minute}</div>
+        <div className="digit">{state.second}</div>
+      </div>
     </div>
   );
 };
@@ -190,10 +224,17 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
     </div>
   );
 };
-const ClockWithErrorBoundary = ({ children, hour, minute, props }) => {
+const ClockWithErrorBoundary = ({
+  children,
+  hour,
+  minute,
+  second,
+  ...props
+}) => {
   const { state, dispatch } = useClock({
     hour,
-    minute
+    minute,
+    second
   });
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
