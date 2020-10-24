@@ -1,8 +1,15 @@
 .digital-wrap {
   display: flex;
-  background: rgb(39, 39, 39);
 }
 
+.digit-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.digit-identifier {
+  font-size: 24px;
+}
 .digit {
   flex: 1;
   border: 2px solid black;

@@ -20,13 +20,28 @@ const DigitalClock = ({ state, dispatch, children }) => {
   );
 };
 const HourDigit = ({ hour }) => {
-  return <div className="digit">{hour}</div>;
+  return (
+    <div className="digit-display">
+      <div className="digit-identifier">Hour</div>
+      <div className="digit">{hour}</div>
+    </div>
+  );
 };
 const MinuteDigit = ({ minute }) => {
-  return <div className="digit">{minute}</div>;
+  return (
+    <div className="digit-display">
+      <div className="digit-identifier">Minute</div>
+      <div className="digit">{minute}</div>
+    </div>
+  );
 };
 const SecondDigit = ({ second }) => {
-  return <div className="digit">{second}</div>;
+  return (
+    <div className="digit-display">
+      <div className="digit-identifier">Second</div>
+      <div className="digit">{second}</div>
+    </div>
+  );
 };
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   return (
