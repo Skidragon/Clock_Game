@@ -13,4 +13,6 @@
 .digit {
   flex: 1;
   border: 2px solid black;
+  font-size: 24px;
+  padding: 0.5em;
 }
