@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import {
-  Clock,
-  HourHand,
-  MinuteHand,
-  SecondHand
-} from "./components/Clocks/AnalogClock/AnalogClock";
-import {
-  DigitalClock,
-  HourDigit,
-  MinuteDigit,
-  SecondDigit
-} from "./components/Clocks/DigitalClock/DigitalClock";
 import "./styles.css";
-
+import { Home } from "./views/Home/Home";
+import { Game } from "./views/Game/Game";
+const pages = {
+  HOME: "HOME",
+  GAME: "GAME",
+  SCORE: "SCORE"
+};
 export default function App() {
-  const [time, setTime] = useState({
-    hour: 4,
-    minute: 40
-  });
+  const [page, setPage] = useState(pages.HOME);
+  const [mode, setMode] = useState("HARD");
+
   return (
     <div
       className="App"
@@ -26,32 +19,15 @@ export default function App() {
         justifyContent: "center"
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexFlow: "column",
-          alignItems: "center"
-        }}
-      >
-        <h1>Clock Memory</h1>
-        <div
-          style={{
-            display: "flex",
-            flexFlow: "column"
+      {pages.HOME === page ? (
+        <Home
+          onStart={mode => {
+            setPage(pages.GAME);
+            setMode(mode);
           }}
-        >
-          <Clock>
-            <HourHand />
-            <MinuteHand />
-            <SecondHand />
-          </Clock>
-          <DigitalClock>
-            <HourDigit />
-            <MinuteDigit />
-            <SecondDigit />
-          </DigitalClock>
-        </div>
-      </div>
+        />
+      ) : null}
+      {pages.GAME === page ? <Game mode={mode} /> : null}
     </div>
   );
 }

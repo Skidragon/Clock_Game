@@ -1,5 +1,6 @@
 .digital-wrap {
   display: flex;
+  justify-content: space-between;
 }
 
 .digit-display {

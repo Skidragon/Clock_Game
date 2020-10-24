@@ -18,6 +18,9 @@ const Clock = ({ state, dispatch, children, ...props }) => {
     <div>
       <div className="clock" {...props}>
         {React.Children.map(children, child => {
+          if (!child) {
+            return;
+          }
           return React.cloneElement(child, state);
         })}
       </div>

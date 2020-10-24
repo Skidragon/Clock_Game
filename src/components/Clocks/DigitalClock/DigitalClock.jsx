@@ -14,6 +14,9 @@ const DigitalClock = ({ state, dispatch, children }) => {
   return (
     <div className="digital-wrap">
       {React.Children.map(children, child => {
+        if (!child) {
+          return;
+        }
         return React.cloneElement(child, state);
       })}
     </div>
