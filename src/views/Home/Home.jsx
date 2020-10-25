@@ -57,7 +57,7 @@ export const Home = ({ onStart }) => {
                   setModeSelection(e.currentTarget.value);
                 }}
               />
-              <label for="easy">Easy</label>
+              <label htmlFor="easy">Easy</label>
             </div>
             <div>
               <input
@@ -70,7 +70,7 @@ export const Home = ({ onStart }) => {
                   setModeSelection(e.currentTarget.value);
                 }}
               />
-              <label for="medium">Medium</label>
+              <label htmlFor="medium">Medium</label>
             </div>
             <div>
               <input
@@ -83,7 +83,7 @@ export const Home = ({ onStart }) => {
                   setModeSelection(e.currentTarget.value);
                 }}
               />
-              <label for="hard">Hard</label>
+              <label htmlFor="hard">Hard</label>
             </div>
           </div>
           <button
