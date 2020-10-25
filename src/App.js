@@ -16,9 +16,20 @@ export default function App() {
       className="App"
       style={{
         display: "flex",
-        justifyContent: "center"
+        flexFlow: "column",
+        alignItems: "center"
       }}
     >
+      <h1
+        onClick={() => {
+          setPage(pages.HOME);
+        }}
+        style={{
+          cursor: "pointer"
+        }}
+      >
+        Clock Memory
+      </h1>
       {pages.HOME === page ? (
         <Home
           onStart={mode => {

@@ -22,7 +22,6 @@ export const Home = ({ onStart }) => {
         alignItems: "center"
       }}
     >
-      <h1>Clock Memory</h1>
       <div
         style={{
           display: "flex",
