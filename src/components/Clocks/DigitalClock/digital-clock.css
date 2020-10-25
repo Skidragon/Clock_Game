@@ -1,12 +1,16 @@
 .digital-wrap {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  width: 100%;
 }
 
 .digit-display {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
+}
+.digit-display > .digit {
+  margin: 0 24px;
 }
 .digit-identifier {
   font-size: 24px;
