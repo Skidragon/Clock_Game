@@ -13,7 +13,6 @@ import {
 } from "../../components/Clocks/DigitalClock/DigitalClock";
 export const Home = ({ onStart }) => {
   const [modeSelection, setModeSelection] = useState("EASY");
-  console.log(modeSelection);
 
   return (
     <div
@@ -44,47 +43,57 @@ export const Home = ({ onStart }) => {
           <div
             style={{
               display: "flex",
-              padding: "12px"
+              justifyContent: "space-between",
+              padding: "36px"
             }}
           >
-            <input
-              checked={modeSelection === "EASY"}
-              value="EASY"
-              type="radio"
-              name="mode"
-              id="easy"
-              onChange={e => {
-                setModeSelection(e.currentTarget.value);
-              }}
-            />
-            <label for="easy">Easy</label>
-            <input
-              checked={modeSelection === "MEDIUM"}
-              value="MEDIUM"
-              type="radio"
-              name="mode"
-              id="medium"
-              onChange={e => {
-                setModeSelection(e.currentTarget.value);
-              }}
-            />
-            <label for="medium">Medium</label>
-            <input
-              checked={modeSelection === "HARD"}
-              value="HARD"
-              type="radio"
-              name="mode"
-              id="hard"
-              onChange={e => {
-                setModeSelection(e.currentTarget.value);
-              }}
-            />
-            <label for="hard">Hard</label>
+            <div>
+              <input
+                checked={modeSelection === "EASY"}
+                value="EASY"
+                type="radio"
+                name="mode"
+                id="easy"
+                onChange={e => {
+                  setModeSelection(e.currentTarget.value);
+                }}
+              />
+              <label for="easy">Easy</label>
+            </div>
+            <div>
+              <input
+                checked={modeSelection === "MEDIUM"}
+                value="MEDIUM"
+                type="radio"
+                name="mode"
+                id="medium"
+                onChange={e => {
+                  setModeSelection(e.currentTarget.value);
+                }}
+              />
+              <label for="medium">Medium</label>
+            </div>
+            <div>
+              <input
+                checked={modeSelection === "HARD"}
+                value="HARD"
+                type="radio"
+                name="mode"
+                id="hard"
+                onChange={e => {
+                  setModeSelection(e.currentTarget.value);
+                }}
+              />
+              <label for="hard">Hard</label>
+            </div>
           </div>
           <button
             type="submit"
             onClick={() => {
               onStart(modeSelection);
+            }}
+            style={{
+              padding: "1em 2em"
             }}
           >
             Start
