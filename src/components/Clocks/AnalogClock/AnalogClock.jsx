@@ -4,16 +4,7 @@ import { useClock } from "../useClock";
 import "./analog-clock.css";
 
 // https://cssanimation.rocks/clocks/
-const Clock = ({ state, dispatch, children, ...props }) => {
-  useEffect(() => {
-    const moveFoward = setInterval(() => {
-      dispatch({ type: "MOVE_FORWARD" });
-    }, 1000);
-    return () => {
-      clearInterval(moveFoward);
-    };
-  }, [dispatch]);
-
+const Clock = ({ state, children, ...props }) => {
   return (
     <div>
       <div className="clock" {...props}>
@@ -43,14 +34,14 @@ const ClockWithErrorBoundary = ({
   second,
   ...props
 }) => {
-  const { state, dispatch } = useClock({
+  const { state } = useClock({
     hour,
     minute,
     second
   });
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Clock state={state} dispatch={dispatch} {...props}>
+      <Clock state={state} {...props}>
         {children}
       </Clock>
     </ErrorBoundary>

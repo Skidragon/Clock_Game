@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 
 const callAll = (...fns) => (...args) => fns.forEach(fn => fn?.(...args));
 const actionTypes = {
@@ -14,14 +14,35 @@ const actionTypes = {
   INCREMENT_SECOND: "INCREMENT_SECOND"
 };
 
-const clockReducer = (state, action) => {
-  if (action.hour && (action.hour < 0 || action.hour > 11)) {
-    throw new Error("hour must be a number from 0 to 11 inclusive");
+const isValidHour = hour => {
+  if (/^([1-9]|[1][0-2])$/.test(String(hour))) {
+    return true;
+  } else {
+    return false;
   }
-  if (action.minute && (action.minute < 0 || action.minute > 59)) {
+};
+const isValidMinute = minute => {
+  if (minute && /^([0-9]|[1-5][0-9])$/.test(String(minute))) {
+    return true;
+  } else {
+    return false;
+  }
+};
+const isValidSecond = second => {
+  if (second && /^([0-9]|[1-5][0-9])$/.test(String(second))) {
+    return true;
+  } else {
+    return false;
+  }
+};
+const clockReducer = (state, action) => {
+  if (action.hour && !isValidHour(action.hour)) {
+    throw new Error("hour must be a number from 1 to 12 inclusive");
+  }
+  if (action.minute && !isValidMinute(action.minute)) {
     throw new Error("minute must be a number from 0 to 59 inclusive");
   }
-  if (action.second && (action.second < 0 || action.second > 59)) {
+  if (action.second && !isValidSecond(action.second)) {
     throw new Error("second must be a number from 0 to 59 inclusive");
   }
   switch (action.type) {
@@ -38,7 +59,7 @@ const clockReducer = (state, action) => {
         updatedMinute = 0;
       }
       return {
-        hour: updatedHour,
+        hour: updatedHour > 12 ? 1 : updatedHour,
         minute: updatedMinute,
         second: updatedSecond
       };
@@ -74,14 +95,14 @@ const clockReducer = (state, action) => {
         return Math.floor(Math.random() * (max - min + 1) + min);
       }
       return {
-        hour: randomIntFromInterval(0, 11),
+        hour: randomIntFromInterval(1, 12),
         minute: randomIntFromInterval(0, 59),
         second: randomIntFromInterval(0, 59)
       };
     case actionTypes.INCREMENT_HOUR:
       return {
         ...state,
-        hour: state.hour > 11 ? 0 : state.hour + 1
+        hour: state.hour > 12 ? 1 : state.hour + 1
       };
     case actionTypes.INCREMENT_MINUTE:
       return {
@@ -123,6 +144,29 @@ const useClock = ({
 
   const secondIsControlled = Boolean(controlledSecond);
   const second = secondIsControlled ? controlledSecond : state.second;
+  useEffect(() => {
+    if (
+      !hourIsControlled ||
+      !minuteIsControlled ||
+      !secondIsControlled ||
+      !clockIsControlled
+    ) {
+      const moveFoward = setInterval(() => {
+        dispatch({ type: "MOVE_FORWARD" });
+      }, 1000);
+
+      return () => {
+        clearInterval(moveFoward);
+      };
+    }
+  }, [
+    dispatch,
+    clockIsControlled,
+    hourIsControlled,
+    minuteIsControlled,
+    secondIsControlled
+  ]);
+
   const dispatchWithOnChange = action => {
     if (!clockIsControlled) {
       dispatch(action);
@@ -151,4 +195,4 @@ const useClock = ({
   };
 };
 
-export { actionTypes, useClock };
+export { actionTypes, useClock, isValidHour, isValidMinute, isValidSecond };

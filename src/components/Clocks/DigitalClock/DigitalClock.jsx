@@ -1,16 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./digital-clock.css";
 import { useClock } from "../useClock";
 import { ErrorBoundary } from "react-error-boundary";
-const DigitalClock = ({ state, dispatch, children }) => {
-  useEffect(() => {
-    const moveFoward = setInterval(() => {
-      dispatch({ type: "MOVE_FORWARD" });
-    }, 1000);
-    return () => {
-      clearInterval(moveFoward);
-    };
-  }, [dispatch]);
+const DigitalClock = ({ state, children }) => {
   return (
     <div className="digital-wrap">
       {React.Children.map(children, child => {
@@ -60,12 +52,14 @@ const ClockWithErrorBoundary = ({
   hour,
   minute,
   second,
+  onChange,
   ...props
 }) => {
   const { state, dispatch } = useClock({
     hour,
     minute,
-    second
+    second,
+    onChange
   });
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
