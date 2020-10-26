@@ -134,21 +134,18 @@ const useClock = ({
 } = {}) => {
   const { current: internalIntialState } = React.useRef(initialState);
   const [state, dispatch] = useReducer(reducer, internalIntialState);
-  const clockIsControlled = Boolean(onChange);
-
+  
   const hourIsControlled = Boolean(controlledHour);
   const hour = hourIsControlled ? controlledHour : state.hour;
-
+  
   const minuteIsControlled = Boolean(controlledMinute);
   const minute = minuteIsControlled ? controlledMinute : state.minute;
-
+  
   const secondIsControlled = Boolean(controlledSecond);
   const second = secondIsControlled ? controlledSecond : state.second;
+  const clockIsControlled = hourIsControlled || minuteIsControlled || secondIsControlled;
   useEffect(() => {
     if (
-      !hourIsControlled ||
-      !minuteIsControlled ||
-      !secondIsControlled ||
       !clockIsControlled
     ) {
       const moveFoward = setInterval(() => {
@@ -162,9 +159,6 @@ const useClock = ({
   }, [
     dispatch,
     clockIsControlled,
-    hourIsControlled,
-    minuteIsControlled,
-    secondIsControlled
   ]);
 
   const dispatchWithOnChange = action => {
