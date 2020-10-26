@@ -78,7 +78,7 @@ const gameReducer = (state, action) => {
       throw new Error(`${action.type} is not a valid action in gameReducer.`);
   }
 };
-export const Game = ({ mode = modes.EASY }) => {
+export const Game = ({ mode = modes.EASY, backToHome }) => {
   const [gameState, gameDispatch] = useReducer(gameReducer, {
     sequences: [
       {
@@ -189,7 +189,12 @@ export const Game = ({ mode = modes.EASY }) => {
           </div>
         </div>
       )}
-      {gameState.phase === actionTypes.SCORE_PHASE && <div>Score</div>}
+      {gameState.phase === actionTypes.SCORE_PHASE && (
+        <div>
+          <button onClick={backToHome}>Home</button>
+          Your Score: {gameState.score}
+        </div>
+      )}
     </div>
   );
 };

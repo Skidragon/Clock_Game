@@ -4,8 +4,7 @@ import { Home } from "./views/Home/Home";
 import { Game } from "./views/Game/Game";
 const pages = {
   HOME: "HOME",
-  GAME: "GAME",
-  SCORE: "SCORE"
+  GAME: "GAME"
 };
 export default function App() {
   const [page, setPage] = useState(pages.HOME);
@@ -38,7 +37,9 @@ export default function App() {
           }}
         />
       ) : null}
-      {pages.GAME === page ? <Game mode={mode} /> : null}
+      {pages.GAME === page ? (
+        <Game mode={mode} backToHome={setPage.bind(null, pages.HOME)} />
+      ) : null}
     </div>
   );
 }
