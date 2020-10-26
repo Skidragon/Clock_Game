@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useClock } from "../useClock";
 import "./analog-clock.css";
