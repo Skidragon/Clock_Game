@@ -51,7 +51,7 @@ const gameReducer = (state, action) => {
         return {
           ...state,
           phase: actionTypes.MEMORIZE_PHASE,
-          sequenceIndex: state.sequences.length - 1,
+          sequenceIndex: state.sequences.length,
           score: state.score + 1,
           sequences: [
             ...state.sequences,
@@ -65,7 +65,7 @@ const gameReducer = (state, action) => {
       } else {
         return {
           ...state,
-          phase: actionTypes.MEMORIZE_PHASE,
+          phase: actionTypes.ANSWER_PHASE,
           sequenceIndex: state.sequenceIndex + 1
         };
       }
