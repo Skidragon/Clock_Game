@@ -74,6 +74,8 @@ const gameReducer = (state, action) => {
         ...state,
         phase: actionTypes.SCORE_PHASE
       };
+    default:
+      throw new Error(`${action.type} is not a valid action in gameReducer.`);
   }
 };
 export const Game = ({ mode = modes.EASY }) => {
