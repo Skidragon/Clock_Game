@@ -91,7 +91,6 @@ export const Game = ({ mode = modes.EASY }) => {
     sequenceIndex: 0,
     phase: actionTypes.MEMORIZE_PHASE
   });
-  console.log(gameState.sequences, gameState.sequenceIndex);
 
   useEffect(() => {
     const memorizePhase = setInterval(() => {
@@ -109,7 +108,6 @@ export const Game = ({ mode = modes.EASY }) => {
     second: ""
   });
   const currentTime = gameState.sequences[gameState.sequenceIndex];
-  console.log(currentTime);
   return (
     <div>
       {JSON.stringify(gameState, undefined, 3)}
@@ -175,15 +173,12 @@ export const Game = ({ mode = modes.EASY }) => {
               </div>
               <button
                 onClick={() => {
-                  console.log(currentTime);
                   if (
                     isValidHour(input.hour) &&
                     currentTime.hour === Number(input.hour)
                   ) {
-                    console.log(actionTypes.MEMORIZE_PHASE);
                     gameDispatch({ type: actionTypes.ANSWER_PHASE });
                   } else {
-                    console.log(actionTypes.SCORE_PHASE);
                     gameDispatch({ type: actionTypes.SCORE_PHASE });
                   }
                 }}
