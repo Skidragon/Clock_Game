@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import {
   Clock,
   HourHand,
@@ -107,6 +107,7 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
     minute: "",
     second: ""
   });
+  const hourInputRef = useRef();
   const currentTime = gameState.sequences[gameState.sequenceIndex];
   return (
     <div>
@@ -152,24 +153,81 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
                 e.preventDefault();
               }}
             >
-              <div>
-                <label htmlFor="hour">Hour:</label>
-                <input
-                  type="text"
-                  id="hour"
-                  value={input.hour}
-                  onChange={e => {
-                    if (isValidHour(e.target.value)) {
-                      setInput(prevState => {
-                        return { ...prevState, hour: e.target.value };
-                      });
-                    } else if (e.target.value.length === 0) {
-                      return setInput(prevState => {
-                        return { ...prevState, hour: "" };
-                      });
-                    }
-                  }}
-                />
+              <div
+                style={{
+                  display: "flex",
+                  flexFlow: "column"
+                }}
+              >
+                <div>
+                  <label htmlFor="hour">Hour:</label>
+                  <input
+                    type="text"
+                    id="hour"
+                    style={{
+                      marginBottom: "12px"
+                    }}
+                    autoFocus={true}
+                    ref={hourInputRef}
+                    value={input.hour}
+                    onChange={e => {
+                      if (isValidHour(e.target.value)) {
+                        setInput(prevState => {
+                          return { ...prevState, hour: e.target.value };
+                        });
+                      } else if (e.target.value.length === 0) {
+                        return setInput(prevState => {
+                          return { ...prevState, hour: "" };
+                        });
+                      }
+                    }}
+                  />
+                </div>
+                {(mode === modes.MEDIUM || mode === modes.HARD) && (
+                  <div>
+                    <label htmlFor="minute">Minute:</label>
+                    <input
+                      type="text"
+                      id="minute"
+                      style={{
+                        marginBottom: "12px"
+                      }}
+                      value={input.minute}
+                      onChange={e => {
+                        if (isValidMinute(e.target.value)) {
+                          setInput(prevState => {
+                            return { ...prevState, minute: e.target.value };
+                          });
+                        } else if (e.target.value.length === 0) {
+                          return setInput(prevState => {
+                            return { ...prevState, minute: "" };
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+                {mode === modes.HARD && (
+                  <div>
+                    <label htmlFor="second">Second:</label>
+                    <input
+                      type="text"
+                      id="second"
+                      value={input.second}
+                      onChange={e => {
+                        if (isValidSecond(e.target.value)) {
+                          setInput(prevState => {
+                            return { ...prevState, second: e.target.value };
+                          });
+                        } else if (e.target.value.length === 0) {
+                          return setInput(prevState => {
+                            return { ...prevState, second: "" };
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               <button
                 onClick={() => {
