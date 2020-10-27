@@ -174,12 +174,30 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
               <button
                 onClick={() => {
                   if (
-                    isValidHour(input.hour) &&
-                    currentTime.hour === Number(input.hour)
+                    mode === modes.HARD &&
+                    isValidSecond(input.second) &&
+                    currentTime.second !== Number(input.secomd)
                   ) {
-                    gameDispatch({ type: actionTypes.ANSWER_PHASE });
-                  } else {
                     gameDispatch({ type: actionTypes.SCORE_PHASE });
+                  } else if (
+                    (mode === modes.MEDIUM || mode === modes.HARD) &&
+                    isValidMinute(input.minute) &&
+                    currentTime.minute !== Number(input.minute)
+                  ) {
+                    gameDispatch({ type: actionTypes.SCORE_PHASE });
+                  } else if (
+                    isValidHour(input.hour) &&
+                    currentTime.hour !== Number(input.hour)
+                  ) {
+                    gameDispatch({ type: actionTypes.SCORE_PHASE });
+                  } else {
+                    gameDispatch({ type: actionTypes.ANSWER_PHASE });
+                    hourInputRef.current.focus();
+                    setInput({
+                      hour: "",
+                      minute: "",
+                      second: ""
+                    });
                   }
                 }}
               >
