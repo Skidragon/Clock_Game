@@ -137,7 +137,9 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
       gameDispatch({ type: actionTypes.SCORE_PHASE });
     } else {
       gameDispatch({ type: actionTypes.ANSWER_PHASE });
+      if (hourInputRef.current) {
       hourInputRef.current.focus();
+      }
       setInput({
         hour: "",
         minute: "",
