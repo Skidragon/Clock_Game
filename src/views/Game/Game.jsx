@@ -138,7 +138,7 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
     } else {
       gameDispatch({ type: actionTypes.ANSWER_PHASE });
       if (hourInputRef.current) {
-      hourInputRef.current.focus();
+        hourInputRef.current.focus();
       }
       setInput({
         hour: "",
@@ -149,7 +149,7 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
   };
   return (
     <div>
-      {JSON.stringify(gameState, undefined, 3)}
+      <p>{JSON.stringify(gameState, undefined, 3)}</p>
       {actionTypes.MEMORIZE_PHASE === gameState.phase && (
         <div
           style={{
@@ -283,8 +283,21 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
         </div>
       )}
       {gameState.phase === actionTypes.SCORE_PHASE && (
-        <div>
-          <button onClick={backToHome}>Home</button>
+        <div
+          style={{
+            display: "flex",
+            flexFlow: "column",
+            alignItems: "center"
+          }}
+        >
+          <button
+            onClick={backToHome}
+            style={{
+              marginBottom: "12px"
+            }}
+          >
+            Home
+          </button>
           Your Score: {gameState.score}
         </div>
       )}
