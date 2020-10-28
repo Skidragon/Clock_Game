@@ -11,7 +11,6 @@ import {
   MinuteDigit,
   SecondDigit
 } from "../../components/Clocks/DigitalClock/DigitalClock";
-import { useLocalStorageState } from "../../hooks/useLocalStorageState";
 import {
   isValidHour,
   isValidMinute,
