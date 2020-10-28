@@ -109,9 +109,15 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
   });
   const hourInputRef = useRef();
   const currentTime = gameState.sequences[gameState.sequenceIndex];
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit } = useForm();
   const onSubmit = data => {
     console.log(data);
+    if (
+      !data.hour ||
+      (!data.minute && data.minute !== undefined) ||
+      (!data.second && data.second !== undefined)
+    )
+      return;
     if (
       mode === modes.HARD &&
       isValidSecond(input.second) &&
