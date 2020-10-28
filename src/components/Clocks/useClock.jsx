@@ -134,20 +134,19 @@ const useClock = ({
 } = {}) => {
   const { current: internalIntialState } = React.useRef(initialState);
   const [state, dispatch] = useReducer(reducer, internalIntialState);
-  
+
   const hourIsControlled = Boolean(controlledHour);
   const hour = hourIsControlled ? controlledHour : state.hour;
-  
+
   const minuteIsControlled = Boolean(controlledMinute);
   const minute = minuteIsControlled ? controlledMinute : state.minute;
-  
+
   const secondIsControlled = Boolean(controlledSecond);
   const second = secondIsControlled ? controlledSecond : state.second;
-  const clockIsControlled = hourIsControlled || minuteIsControlled || secondIsControlled;
+  const clockIsControlled =
+    hourIsControlled || minuteIsControlled || secondIsControlled;
   useEffect(() => {
-    if (
-      !clockIsControlled
-    ) {
+    if (!clockIsControlled) {
       const moveFoward = setInterval(() => {
         dispatch({ type: "MOVE_FORWARD" });
       }, 1000);
@@ -156,22 +155,10 @@ const useClock = ({
         clearInterval(moveFoward);
       };
     }
-  }, [
-    dispatch,
-    clockIsControlled,
-  ]);
-
-  const dispatchWithOnChange = action => {
-    if (!clockIsControlled) {
-      dispatch(action);
-    }
-    if (onChange) {
-      onChange(reducer({ ...state, hour, minute, second }, action), action);
-    }
-  };
+  }, [dispatch, clockIsControlled]);
 
   const reset = () =>
-    dispatchWithOnChange({
+    dispatch({
       type: actionTypes.RESET,
       initialState: internalIntialState
     });
