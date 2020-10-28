@@ -17,6 +17,7 @@ import {
   isValidMinute,
   isValidSecond
 } from "../../components/Clocks/useClock";
+import { useForm } from "react-hook-form";
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -109,6 +110,36 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
   });
   const hourInputRef = useRef();
   const currentTime = gameState.sequences[gameState.sequenceIndex];
+  const { register, handleSubmit, errors } = useForm();
+  const onSubmit = data => {
+    console.log(data);
+    if (
+      mode === modes.HARD &&
+      isValidSecond(input.second) &&
+      currentTime.second !== Number(input.secomd)
+    ) {
+      gameDispatch({ type: actionTypes.SCORE_PHASE });
+    } else if (
+      (mode === modes.MEDIUM || mode === modes.HARD) &&
+      isValidMinute(input.minute) &&
+      currentTime.minute !== Number(input.minute)
+    ) {
+      gameDispatch({ type: actionTypes.SCORE_PHASE });
+    } else if (
+      isValidHour(input.hour) &&
+      currentTime.hour !== Number(input.hour)
+    ) {
+      gameDispatch({ type: actionTypes.SCORE_PHASE });
+    } else {
+      gameDispatch({ type: actionTypes.ANSWER_PHASE });
+      hourInputRef.current.focus();
+      setInput({
+        hour: "",
+        minute: "",
+        second: ""
+      });
+    }
+  };
   return (
     <div>
       {JSON.stringify(gameState, undefined, 3)}
@@ -148,11 +179,7 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
         <div>
           <p>{`What was the #${gameState.sequenceIndex + 1} clock's time?`}</p>
           <div>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-              }}
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div
                 style={{
                   display: "flex",
@@ -161,14 +188,19 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
               >
                 <div>
                   <label htmlFor="hour">Hour:</label>
+
                   <input
                     type="text"
                     id="hour"
+                    name="hour"
                     style={{
                       marginBottom: "12px"
                     }}
                     autoFocus={true}
-                    ref={hourInputRef}
+                    ref={ref => {
+                      hourInputRef.current = ref;
+                      register(ref);
+                    }}
                     value={input.hour}
                     onChange={e => {
                       if (isValidHour(e.target.value)) {
@@ -182,13 +214,20 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
                       }
                     }}
                   />
+                  <span
+                    style={{
+                      marginLeft: "12px"
+                    }}
+                  ></span>
                 </div>
                 {(mode === modes.MEDIUM || mode === modes.HARD) && (
                   <div>
                     <label htmlFor="minute">Minute:</label>
                     <input
+                      ref={register}
                       type="text"
                       id="minute"
+                      name="minute"
                       style={{
                         marginBottom: "12px"
                       }}
@@ -211,8 +250,10 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
                   <div>
                     <label htmlFor="second">Second:</label>
                     <input
+                      ref={register}
                       type="text"
                       id="second"
+                      name="second"
                       value={input.second}
                       onChange={e => {
                         if (isValidSecond(e.target.value)) {
@@ -229,38 +270,7 @@ export const Game = ({ mode = modes.EASY, backToHome }) => {
                   </div>
                 )}
               </div>
-              <button
-                onClick={() => {
-                  if (
-                    mode === modes.HARD &&
-                    isValidSecond(input.second) &&
-                    currentTime.second !== Number(input.secomd)
-                  ) {
-                    gameDispatch({ type: actionTypes.SCORE_PHASE });
-                  } else if (
-                    (mode === modes.MEDIUM || mode === modes.HARD) &&
-                    isValidMinute(input.minute) &&
-                    currentTime.minute !== Number(input.minute)
-                  ) {
-                    gameDispatch({ type: actionTypes.SCORE_PHASE });
-                  } else if (
-                    isValidHour(input.hour) &&
-                    currentTime.hour !== Number(input.hour)
-                  ) {
-                    gameDispatch({ type: actionTypes.SCORE_PHASE });
-                  } else {
-                    gameDispatch({ type: actionTypes.ANSWER_PHASE });
-                    hourInputRef.current.focus();
-                    setInput({
-                      hour: "",
-                      minute: "",
-                      second: ""
-                    });
-                  }
-                }}
-              >
-                Next
-              </button>
+              <input type="submit" value="Next" />
             </form>
           </div>
         </div>
